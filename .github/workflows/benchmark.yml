@@ -23,20 +23,28 @@ jobs:
         run: |
           set -euo pipefail
           API_URL="https://api.github.com/repos/ggml-org/llama.cpp/releases/latest"
+          # Plain CPU build only — asset is named exactly
+          # "llama-b<build>-bin-ubuntu-x64.tar.gz" (no rocm/sycl/vulkan/openvino suffix)
           ASSET_URL=$(curl -s "$API_URL" | python3 -c "
-          import json, sys
+          import json, sys, re
           data = json.load(sys.stdin)
+          pattern = re.compile(r'^llama-b\d+-bin-ubuntu-x64\.tar\.gz$')
           for a in data['assets']:
-              if 'ubuntu' in a['name'].lower() and a['name'].endswith('.zip') and 'x64' in a['name'].lower():
+              if pattern.match(a['name']):
                   print(a['browser_download_url'])
                   break
           ")
           echo "Downloading: $ASSET_URL"
-          curl -L -o llama.zip "$ASSET_URL"
+          curl -L -o llama.tar.gz "$ASSET_URL"
           mkdir -p llama-bin
-          unzip -q llama.zip -d llama-bin
-          find llama-bin -maxdepth 3 -type f -name "llama-*" -exec chmod +x {} \;
-          echo "$(pwd)/llama-bin/build/bin" >> "$GITHUB_PATH"
+          tar -xzf llama.tar.gz -C llama-bin
+          find llama-bin -maxdepth 4 -type f -name "llama-*" -exec chmod +x {} \;
+          find llama-bin -maxdepth 4 -type d
+          BIN_DIR=$(dirname "$(find llama-bin -maxdepth 4 -type f -name 'llama-bench' | head -1)")
+          echo "BIN_DIR=$BIN_DIR"
+          echo "$BIN_DIR" >> "$GITHUB_PATH"
+          # llama.cpp's shared libs (libggml*, libllama*) live alongside the binaries
+          echo "LD_LIBRARY_PATH=$BIN_DIR:$LD_LIBRARY_PATH" >> "$GITHUB_ENV"
           find llama-bin -maxdepth 4 -type d
 
       - name: Download candidate models
