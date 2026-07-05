@@ -68,18 +68,23 @@ jobs:
           echo "## Gemma-2-2B-it" | tee -a "$GITHUB_STEP_SUMMARY"
           llama-bench -m candidates/gemma-2-2b-it-q4_k_m.gguf -t 4 | tee -a "$GITHUB_STEP_SUMMARY"
 
-      - name: Quality + peak RAM check (llama-simple)
+      - name: Quality + peak RAM check (llama-cli)
         run: |
           set -euo pipefail
           PROMPT="You are a medical assistant. Explain what diabetes is in simple terms."
+          # llama-simple isn't in the prebuilt release tarball (source-build only tool);
+          # llama-cli -no-cnv -st gives single-turn, non-interactive completion instead.
+          # stdin < /dev/null is a safety net against any interactive-mode fallback.
           echo "## Qwen — sample output + peak RAM" | tee -a "$GITHUB_STEP_SUMMARY"
-          /usr/bin/time -v llama-simple -m candidates/qwen2.5-1.5b-instruct-q4_k_m.gguf -n 100 "$PROMPT" 2>&1 \
-            | tee qwen_out.log | tail -30
+          /usr/bin/time -v llama-cli -m candidates/qwen2.5-1.5b-instruct-q4_k_m.gguf \
+            -no-cnv -st -n 100 -p "$PROMPT" < /dev/null > qwen_out.log 2>&1 || true
+          tail -30 qwen_out.log
           grep -E "Maximum resident|decoded" qwen_out.log | tee -a "$GITHUB_STEP_SUMMARY" || true
           echo "" | tee -a "$GITHUB_STEP_SUMMARY"
           echo "## Gemma — sample output + peak RAM" | tee -a "$GITHUB_STEP_SUMMARY"
-          /usr/bin/time -v llama-simple -m candidates/gemma-2-2b-it-q4_k_m.gguf -n 100 "$PROMPT" 2>&1 \
-            | tee gemma_out.log | tail -30
+          /usr/bin/time -v llama-cli -m candidates/gemma-2-2b-it-q4_k_m.gguf \
+            -no-cnv -st -n 100 -p "$PROMPT" < /dev/null > gemma_out.log 2>&1 || true
+          tail -30 gemma_out.log
           grep -E "Maximum resident|decoded" gemma_out.log | tee -a "$GITHUB_STEP_SUMMARY" || true
 
       - name: Upload full logs
