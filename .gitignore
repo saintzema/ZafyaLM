@@ -1,7 +1,11 @@
 # Model weights — never commit these to git
 model/*.gguf
+model/*.gguf.partial
 model/*.bin
 model/*.safetensors
+
+# Benchmark scratch space (used to compare candidates before finalizing)
+candidates/
 
 # macOS
 .DS_Store

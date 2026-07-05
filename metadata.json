@@ -1,37 +1,37 @@
 {
-  "team_id": "your-team-id",
-  "domain": "coding_assistants",
+  "team_id": "TODO-confirm-after-devpost-create-project",
+  "domain": "healthcare_medical",
   "language_scope": ["en"],
   "african_alpha_claim": false,
   "budget_laptop_claim": true,
   "submitter": {
-    "name": "your-name",
-    "email": "your-email@domain.com",
-    "github_handle": "your-github"
+    "name": "Emmanuel Ezeji",
+    "email": "techzema@gmail.com",
+    "github_handle": "saintzema"
   },
   "cross_disciplinary_pairing": {
     "discipline": "education",
     "load_bearing": true,
-    "description": "Brief description of how your model serves a real-world domain."
+    "description": "ZafyaLM pairs clinical decision-support with patient education: every response is registered for its audience, giving clinicians differential/triage-oriented language and giving patients plain-language explanations and adherence guidance, entirely offline on the hardware African clinics and households actually own."
   },
   "test_prompts": [
     {
       "prompt_id": "tp_001",
-      "prompt": "Write a Python function that reads a CSV file and returns the column with the highest mean value."
+      "prompt": "A patient reports a persistent cough for three weeks, night sweats, and unexplained weight loss. What conditions should be considered, and what are the immediate next steps for a clinician working in a resource-limited primary care setting?"
     },
     {
       "prompt_id": "tp_002",
-      "prompt": "Explain the difference between a list and a tuple in Python, and give one example where each is the better choice."
+      "prompt": "Explain to a patient, in simple language, why they must finish their full course of malaria medication even after they start feeling better after two days."
     }
   ],
   "model": {
-    "name": "SmolLM2-135M-Instruct-Q4_K_M",
+    "name": "Qwen2.5-1.5B-Instruct-Q4_K_M",
     "runtime": "llama.cpp",
     "quantization": "GGUF Q4_K_M",
-    "parameters_estimate": "135M",
+    "parameters_estimate": "1.8B",
     "packaging": "binary_bundle"
   },
   "_runtime": {
-    "model_path": "model/SmolLM2-135M-Instruct-Q4_K_M.gguf"
+    "model_path": "model/qwen2.5-1.5b-instruct-q4_k_m.gguf"
   }
 }
