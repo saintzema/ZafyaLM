@@ -44,7 +44,7 @@ jobs:
           echo "BIN_DIR=$BIN_DIR"
           echo "$BIN_DIR" >> "$GITHUB_PATH"
           # llama.cpp's shared libs (libggml*, libllama*) live alongside the binaries
-          echo "LD_LIBRARY_PATH=$BIN_DIR:$LD_LIBRARY_PATH" >> "$GITHUB_ENV"
+          echo "LD_LIBRARY_PATH=$BIN_DIR:${LD_LIBRARY_PATH:-}" >> "$GITHUB_ENV"
           find llama-bin -maxdepth 4 -type d
 
       - name: Download candidate models
