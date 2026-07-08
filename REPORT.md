@@ -1,6 +1,6 @@
 # Technical Report — ZafyaLM: Offline Medical Q&A and Patient Education for the 8GB Laptop
 
-**Team ID:** TODO-confirm-after-devpost-create-project
+**Team ID:** zafyalm-1072126
 **Domain:** healthcare_medical
 **Model:** Qwen2.5-1.5B-Instruct-Q4_K_M
 
